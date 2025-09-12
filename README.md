@@ -3,7 +3,7 @@
 <br>
 </h1>
 
-#  
+#  GopherMc
 
 GopherMc is a powerful and flexible Go library for creating Minecraft clients (bots). It provides a clean, high-level
 API for interacting with Minecraft servers, supporting a wide range of protocol versions from **1.7** to the latest
@@ -218,3 +218,7 @@ your improvements.
 ### 📜 License
 
 This project is licensed under the **MIT License**.
+
+### ©️ Credits:
+
+We are using [minecraft-data](https://github.com/PrismarineJS/minecraft-data) for generate packet ids of each version
