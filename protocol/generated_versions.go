@@ -112,7 +112,7 @@ func init() {
 }
 
 func (v Version) Protocol() int32 {
-	if def := getDef(v); def != nil {
+	if def := GetDefinition(v); def != nil {
 		return def.ProtocolVersion
 	}
 	panic(fmt.Sprintf("protocol number missing for version %s", v))
