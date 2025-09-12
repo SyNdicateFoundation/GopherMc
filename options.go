@@ -76,7 +76,6 @@ func WithPrivateKey(key *rsa.PrivateKey) ClientOption {
 func WithUsername(username string) ClientOption {
 	return func(c *Client) {
 		c.username = username
-		c.offlineUuid = protocol.OfflineUUID(username)
 	}
 }
 func WithUUID(uuid uuid.UUID) ClientOption {
