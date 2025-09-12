@@ -1,0 +1,62 @@
+name: Update Minecraft Protocol
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 2 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GopherMc repository
+        uses: actions/checkout@v4
+
+      - name: Checkout minecraft-data repository
+        uses: actions/checkout@v4
+        with:
+          repository: PrismarineJS/minecraft-data
+          path: generator/minecraft-data
+
+      - name: Extract Go Version
+        id: go_version
+        run: echo "version=$(grep -oP 'go \K[0-9.]+' go.mod)" >> $GITHUB_OUTPUT
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ steps.go_version.outputs.version }}
+
+      - name: Generate protocol files
+        run: |
+          cd generator
+          go mod tidy
+          go run .
+
+      - name: Commit and push changes
+        run: |
+          # Configure git with a bot user identity for the commit.
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          # Check if git status reports any modified or new files.
+          if [[ -z $(git status --porcelain) ]]; then
+            echo "No changes to commit. Protocol files are up-to-date."
+            exit 0
+          fi
+
+          echo "Detected changes in protocol files. Committing..."
+          
+          # Add only the specific files you want to commit.
+          git add protocol/generated_versions.go protocol/generated_registry.go
+          
+          # Create the commit with a descriptive message.
+          git commit -m "chore(protocol): Auto-update Minecraft protocol definitions"
+          
+          # Push the new commit to the current branch.
+          git push
