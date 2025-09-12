@@ -33,8 +33,8 @@ type Client struct {
 
 	brand string
 
-	username              string
-	uniqueId, offlineUuid uuid.UUID
+	username string
+	uniqueId uuid.UUID
 
 	settings       protocol.ClientSettings
 	playerPosition *protocol.PlayerPosition
@@ -471,7 +471,7 @@ func (c *Client) SendLogin(username string, uniqueId uuid.UUID) error {
 	}
 
 	if uniqueId == uuid.Nil && c.version >= protocol.V1_19_2 {
-		uniqueId = c.offlineUuid
+		uniqueId = protocol.OfflineUUID(c.username)
 	}
 
 	login := &protocol.ServerboundLoginStart{
