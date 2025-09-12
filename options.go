@@ -55,6 +55,18 @@ func WithBrand(brand string) ClientOption {
 	}
 }
 
+func WithConn(conn net.Conn, version protocol.Version) ClientOption {
+	return func(c *Client) {
+		if c.Conn != nil {
+			_ = c.Close()
+		}
+
+		WithVersion(version)(c)
+
+		c.Conn = protocol.NewConn(conn, c.version)
+	}
+}
+
 func WithPrivateKey(key *rsa.PrivateKey) ClientOption {
 	return func(c *Client) {
 		c.privateKey = key
