@@ -17,7 +17,10 @@ const (
 )
 
 func TestEventListener(t *testing.T) {
-	t.Skip()
+	if testing.Short() {
+		t.Skipf("Skipping test, requires long-running server")
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 

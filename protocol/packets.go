@@ -2,15 +2,15 @@ package protocol
 
 import (
 	"crypto"
-	cryptorand "crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
 	"encoding/binary"
 	"errors"
 	"fmt"
 	"github.com/SyNdicateFoundation/GopherMc/component"
+	"github.com/SyNdicateFoundation/fastrand"
 	"io"
-	"math/rand"
+	"math"
 	"time"
 
 	"github.com/google/uuid"
@@ -353,7 +353,7 @@ func (p *ServerboundChatMessage) Encode(w io.Writer, v Version) error {
 	}
 
 	timestamp := time.Now().UnixMilli()
-	salt := rand.Int63()
+	salt := fastrand.NumberN[int64](math.MaxInt64)
 
 	signature, err := p.signMessage(v, p.Message, timestamp, salt)
 	if err != nil {
@@ -414,7 +414,7 @@ func (p *ServerboundChatMessage) signMessage(v Version, message string, timestam
 	hasher.Write(signBuf)
 	hash := hasher.Sum(nil)
 
-	signature, err := rsa.SignPKCS1v15(cryptorand.Reader, p.PrivateKey, crypto.SHA256, hash)
+	signature, err := rsa.SignPKCS1v15(fastrand.FastReader, p.PrivateKey, crypto.SHA256, hash)
 	if err != nil {
 		return nil, fmt.Errorf("failed to sign chat message: %w", err)
 	}
