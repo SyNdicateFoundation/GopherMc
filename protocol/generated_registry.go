@@ -5,7 +5,7 @@ package protocol
 // init registers all protocol definitions compiled from the JSON data.
 func init() {
 	protocolRegistry[V1_7] = &Definition{
-		ProtocolVersion: 4,
+		ProtocolVersion: 3,
 		PacketIDs: map[State]map[Direction]map[string]int32{
 			StateHandshaking: {
 				DirectionServerbound: {
